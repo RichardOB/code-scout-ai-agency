@@ -1,0 +1,370 @@
+[
+    {
+        "id": "asst_JB8yrfvuvdZrfo2UOAPhA7IF",
+        "created_at": 1738506389,
+        "description": "The CEO agent acts as the primary communicator and coordinator for the CodeScoutAgency. It communicates with the user and the Code Analyzer agent to ensure the task is completed efficiently. The CEO agent will use the Bitbucket API for overseeing the process.",
+        "instructions": "The CodeScoutAgency is dedicated to maintaining high-quality standards for code changes in Bitbucket repositories. Our mission is to automate the process of retrieving code changes, analyzing them for quality adherence, and generating comprehensive reports for developers and stakeholders. The agency operates within a Python codebase using the FastAPI framework, ensuring efficient and effective code review processes.\n\n# CEO Agent Instructions\n\nYou are the CEO agent for the CodeScoutAgency. Your primary role is to act as the communicator and coordinator within the agency. You will oversee the entire process of code analysis and ensure that tasks are completed efficiently.\n\n### Primary Instructions:\n1. Communicate with the user to understand the task requirements and gather necessary information.\n2. Initiate communication with the Code Analyzer agent to start the code analysis process.\n3. Use the Bitbucket API to oversee and manage the process of code retrieval and analysis.\n4. Ensure that the Code Analyzer agent completes its task and generates a comprehensive report.\n5. Communicate the results back to the user in a clear and concise manner.\n6. Coordinate with other agents if necessary to ensure the smooth operation of the agency.\n\n### Collaboration:\n- Work closely with the Code Analyzer agent to ensure that code analysis is thorough and accurate.\n- Maintain open communication with the user to provide updates and gather feedback.\n- Utilize the Bitbucket API effectively to manage code changes and analysis tasks.",
+        "metadata": {},
+        "model": "gpt-4o-2024-08-06",
+        "name": "CEOAgent",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "SendMessage",
+                    "description": "Correctly extracted `SendMessage` with all the required parameters with correct types",
+                    "parameters": {
+                        "$defs": {
+                            "recipient": {
+                                "const": "CodeAnalyzerAgent",
+                                "enum": [
+                                    "CodeAnalyzerAgent"
+                                ],
+                                "title": "recipient",
+                                "type": "string"
+                            }
+                        },
+                        "properties": {
+                            "recipient": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/$defs/recipient"
+                                    }
+                                ],
+                                "description": "CodeAnalyzerAgent: The Code Analyzer agent retrieves changes from pull requests using the Bitbucket API, fetches complete files from Bitbucket API if needed, and analyse each file or code change before suggesting pytest unit tests that can be created.\n"
+                            },
+                            "my_primary_instructions": {
+                                "description": "Please repeat your primary instructions step-by-step, including both completed and the following next steps that you need to perform. For multi-step, complex tasks, first break them down into smaller steps yourself. Then, issue each step individually to the recipient agent via the message parameter. Each identified step should be sent in a separate message. Keep in mind that the recipient agent does not have access to these instructions. You must include recipient agent-specific instructions in the message or in the additional_instructions parameters.",
+                                "title": "My Primary Instructions",
+                                "type": "string"
+                            },
+                            "message": {
+                                "description": "Specify the task required for the recipient agent to complete. Focus on clarifying what the task entails, rather than providing exact instructions. Make sure to inlcude all the relevant information from the conversation needed to complete the task.",
+                                "title": "Message",
+                                "type": "string"
+                            },
+                            "message_files": {
+                                "anyOf": [
+                                    {
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "A list of file IDs to be sent as attachments to this message. Only use this if you have the file ID that starts with 'file-'.",
+                                "examples": [
+                                    "file-1234",
+                                    "file-5678"
+                                ],
+                                "title": "Message Files"
+                            },
+                            "additional_instructions": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "Additional context or instructions from the conversation needed by the recipient agent to complete the task.",
+                                "title": "Additional Instructions"
+                            }
+                        },
+                        "required": [
+                            "message",
+                            "my_primary_instructions",
+                            "recipient"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0,
+        "reasoning_effort": null
+    },
+    {
+        "id": "asst_XvWBs3JLHcOILYoj2GR1uisn",
+        "created_at": 1738506390,
+        "description": "The Code Analyzer agent retrieves changes from pull requests using the Bitbucket API, fetches complete files from Bitbucket API if needed, and analyse each file or code change before suggesting pytest unit tests that can be created.",
+        "instructions": "The CodeScoutAgency is dedicated to maintaining high-quality standards for code changes in Bitbucket repositories. Our mission is to automate the process of retrieving code changes, analyzing them for quality adherence, and generating comprehensive reports for developers and stakeholders. The agency operates within a Python codebase using the FastAPI framework, ensuring efficient and effective code review processes.\n\n# Code Analyzer Agent Instructions\n\nYou are the Code Analyzer agent for the CodeScoutAgency. Your primary role is to retrieve and analyze code changes from pull requests and suggest pytest unit tests that can be created for the code.\n\n### Primary Instructions:\n1. Use the Bitbucket API to access and retrieve changes from pull requests.\n2. Use the code_changes diff found from retrieving pull request changes to determine the paths to the files that have changed\n3. Use the Bitbucket API to pull the full file contents for each changed file if needed\n4. Analyse each code change or file that is not a unit test and suggest pytest unit tests that can be created\n5. From your suggested list of changes, generate the actual pytest test files for each of the suggested unit tests\n6. Communicate the analysis findings back to the CEO\n7. Maintain communication with the CEO agent to provide updates on the analysis process and findings.\n\n\n[//]: # (2. Analyze the retrieved code for adherence to predefined quality standards using code analysis tools.)\n\n[//]: # (3. Communicate the analysis findings to the Report Generator agent for report creation.)\n\n[//]: # (4. Ensure that the analysis is thorough and accurate, addressing any issues or deviations from quality standards.)\n\n[//]: # (5. Maintain communication with the CEO agent to provide updates on the analysis process and findings.)\n\n### Collaboration:\n\n[//]: # (- Work closely with the Report Generator agent to ensure that findings are accurately documented and reported.)\n- Coordinate with the CEO agent to align on task priorities and updates.\n- Utilize the Bitbucket API effectively to manage and analyze pull request changes.",
+        "metadata": {},
+        "model": "gpt-4o-2024-08-06",
+        "name": "CodeAnalyzerAgent",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "BitbucketGetGetCodeFromFileTool",
+                    "description": "This tool interfaces with the Bitbucket API to retrieve the contents of a file in a specific branch or commit.",
+                    "parameters": {
+                        "properties": {
+                            "repository_slug": {
+                                "description": "The slug of the repository for which to list pull requests.",
+                                "title": "Repository Slug",
+                                "type": "string"
+                            },
+                            "source_branch_name": {
+                                "description": "The name of the src branch or the latest commit hash",
+                                "title": "Source Branch Name",
+                                "type": "string"
+                            },
+                            "file_path": {
+                                "description": "The path to the file within the repository",
+                                "title": "File Path",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "file_path",
+                            "repository_slug",
+                            "source_branch_name"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "BitbucketGetPullRequestDiffTool",
+                    "description": "This tool interfaces with the Bitbucket API to retrieve the diff string for a pull request.",
+                    "parameters": {
+                        "properties": {
+                            "repository_slug": {
+                                "description": "The slug of the repository for which to list pull requests.",
+                                "title": "Repository Slug",
+                                "type": "string"
+                            },
+                            "pull_request_id": {
+                                "default": null,
+                                "description": "The ID of the pull request to fetch details for, including code changes.",
+                                "title": "Pull Request Id",
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "repository_slug"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "GetListOfChangedFilesFromDiff",
+                    "description": "This tool extracts a list of the paths of changed files from a Bitbucket Diff.",
+                    "parameters": {
+                        "properties": {
+                            "bitbucket_diff": {
+                                "description": "The code_changes diff string returned from the Bitbucket API when fetching a pull request.",
+                                "title": "Bitbucket Diff",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "bitbucket_diff"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "SendMessage",
+                    "description": "Correctly extracted `SendMessage` with all the required parameters with correct types",
+                    "parameters": {
+                        "$defs": {
+                            "recipient": {
+                                "const": "ReportGeneratorAgent",
+                                "enum": [
+                                    "ReportGeneratorAgent"
+                                ],
+                                "title": "recipient",
+                                "type": "string"
+                            }
+                        },
+                        "properties": {
+                            "recipient": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/$defs/recipient"
+                                    }
+                                ],
+                                "description": "ReportGeneratorAgent: The Report Generator agent compiles a report based on the analysis provided by the Code Analyzer agent and prepares it for the user.\n"
+                            },
+                            "my_primary_instructions": {
+                                "description": "Please repeat your primary instructions step-by-step, including both completed and the following next steps that you need to perform. For multi-step, complex tasks, first break them down into smaller steps yourself. Then, issue each step individually to the recipient agent via the message parameter. Each identified step should be sent in a separate message. Keep in mind that the recipient agent does not have access to these instructions. You must include recipient agent-specific instructions in the message or in the additional_instructions parameters.",
+                                "title": "My Primary Instructions",
+                                "type": "string"
+                            },
+                            "message": {
+                                "description": "Specify the task required for the recipient agent to complete. Focus on clarifying what the task entails, rather than providing exact instructions. Make sure to inlcude all the relevant information from the conversation needed to complete the task.",
+                                "title": "Message",
+                                "type": "string"
+                            },
+                            "message_files": {
+                                "anyOf": [
+                                    {
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "A list of file IDs to be sent as attachments to this message. Only use this if you have the file ID that starts with 'file-'.",
+                                "examples": [
+                                    "file-1234",
+                                    "file-5678"
+                                ],
+                                "title": "Message Files"
+                            },
+                            "additional_instructions": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "Additional context or instructions from the conversation needed by the recipient agent to complete the task.",
+                                "title": "Additional Instructions"
+                            }
+                        },
+                        "required": [
+                            "message",
+                            "my_primary_instructions",
+                            "recipient"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0,
+        "reasoning_effort": null
+    },
+    {
+        "id": "asst_QQGupTxwX9t7wKuFPDIDaqzf",
+        "created_at": 1738506390,
+        "description": "The Report Generator agent compiles a report based on the analysis provided by the Code Analyzer agent and prepares it for the user.",
+        "instructions": "The CodeScoutAgency is dedicated to maintaining high-quality standards for code changes in Bitbucket repositories. Our mission is to automate the process of retrieving code changes, analyzing them for quality adherence, and generating comprehensive reports for developers and stakeholders. The agency operates within a Python codebase using the FastAPI framework, ensuring efficient and effective code review processes.\n\n# Report Generator Agent Instructions\n\nYou are the Report Generator agent for the CodeScoutAgency. Your primary role is to compile and prepare comprehensive reports based on the analysis findings from the Code Analyzer agent.\n\n### Primary Instructions:\n1. Receive analysis findings from the Code Analyzer agent.\n2. Compile the findings into a comprehensive and user-friendly report.\n3. Ensure that the report is clear, concise, and accurately reflects the analysis results.\n4. Prepare the report for delivery to the user, ensuring it meets the agency's quality standards.\n5. Communicate with the Code Analyzer agent to clarify any uncertainties or gather additional information if needed.\n\n### Collaboration:\n- Work closely with the Code Analyzer agent to ensure accurate and complete reporting of analysis findings.\n- Coordinate with the CEO agent to align on report delivery timelines and user requirements.\n- Maintain open communication with the user to provide updates and gather feedback on report quality.",
+        "metadata": {},
+        "model": "gpt-4o-2024-08-06",
+        "name": "ReportGeneratorAgent",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "AnalysisReceiverTool",
+                    "description": "This tool receives analysis findings from the Code Analyzer agent.\nIt handles incoming messages, parses the analysis data, and stores it for report compilation.",
+                    "parameters": {
+                        "properties": {
+                            "incoming_message": {
+                                "description": "The incoming message containing analysis findings from the Code Analyzer agent.",
+                                "title": "Incoming Message",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "incoming_message"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "UserCommunicationTool",
+                    "description": "This tool prepares the compiled report for the user.\nIt formats the report for presentation, ensuring clarity and accessibility,\nand delivers it to the user through the appropriate channel.",
+                    "parameters": {
+                        "properties": {
+                            "compiled_report": {
+                                "description": "The compiled report to be formatted and delivered to the user.",
+                                "title": "Compiled Report",
+                                "type": "string"
+                            },
+                            "user_contact_info": {
+                                "description": "The contact information of the user to whom the report will be delivered.",
+                                "title": "User Contact Info",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "compiled_report",
+                            "user_contact_info"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "ReportCompilerTool",
+                    "description": "This tool compiles reports based on the analysis findings received.\nIt formats the data into a user-friendly report, highlighting key insights and recommendations.",
+                    "parameters": {
+                        "properties": {
+                            "analysis_data": {
+                                "description": "The analysis findings data to be compiled into a report.",
+                                "title": "Analysis Data",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "analysis_data"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0,
+        "reasoning_effort": null
+    }
+]

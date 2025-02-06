@@ -1,0 +1,7 @@
+agency-swarm
+gradio
+pip-tools
+pylint
+python-dotenv
+requests
+unidiff
